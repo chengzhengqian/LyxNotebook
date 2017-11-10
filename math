@@ -1,0 +1,3 @@
+#!/bin/sh
+
+python /home/chengzhengqian/share_workspace/lyx_notebook/math_client.py
