@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/home/chengzhengqian/Application_local/SageMath/sage -python sageServer.py
