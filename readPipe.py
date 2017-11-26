@@ -1,7 +1,9 @@
 import os
 import dispatchCmd as dpc
 
-
+'''
+change this to your lyx pipe out
+'''
 FIFO_LYX='/home/chengzhengqian/.lyxpipe.out'
 
 def listen(fifo, func_thread):

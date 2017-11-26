@@ -1,9 +1,11 @@
 '''
-handy tools to enhance lyx orignal CAS support
+handy tools to enhance lyx orignal CAS support, the drawback is how need to useful some escapte symbols to fool lyx to parse them, os we can have = -> and many other useful things
+In this case, we don't need to use pip to communicate with lyx server.
+there is also python_client.py, use a similar mechanism to pass lyx formula to python or sage, but as it is less handy than use lyx server, we don't keep them here. For math_client, one advange is that lyx has quite nice tool to parser latex formulas, and we further improve it in math_client_configue.py
 '''
 import sys
 from math_client_configure import *
-
+import socketServerUtils as ssu
 import socket
 
 
@@ -47,8 +49,8 @@ def main_run():
         MATH_TYPE=1
     else:
         s.connect((HOST[MATH_TYPE], PORT[MATH_TYPE]))
-        s.send(expression.encode())
-        result = s.recv(1024).decode()
+        ssu.send(s,expression)
+        result = ssu.receive(s)
         s.close()
 
     if(result=="None"):

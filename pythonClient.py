@@ -46,7 +46,6 @@ def runCode(code, backend=1):
     if(backend == 0):
         '''sage'''
         ssu.send(s, ("execfile(\"{0}\")".format(file_temp)))
-    
     result = ssu.receive(s)
     s.close()
     return result

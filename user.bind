@@ -1,0 +1,4 @@
+\bind "C-c r" "command-sequence inset-select-all; copy; line-end ; server-notify"
+\bind "C-c s" "command-sequence inset-select-all; copy; line-end ; server-notify"
+\bind "C-c m" "command-sequence inset-select-all; copy; line-end ; server-notify"
+

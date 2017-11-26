@@ -1,7 +1,6 @@
 import socket
 from pythonServerConfigure import *
 from socketServerUtils import *
-
 import _thread as thread
 import rlcompleter
 import readline
