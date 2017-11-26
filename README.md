@@ -16,12 +16,12 @@ Then, we put ./math to the environmental path so that Lyx will find it first the
 
 Note, edit the path of ./math according to your location.
 
-Now, start lyx, type some formula, and use CAS to run. You could see the corresponding command in mathServer's output.
+Now, start lyx and type some formula.  Use CAS in lyx to run the code. You could see the corresponding result will be displayed after equal sign.
 
-2) The second way is more robust which use the standard lyx pipe (you should enable it first) to communicate.
+2) The second way is more robust which employs the standard lyx pipe (known as lyx server, and you you should enable it in lyx) to  communicate.
 
 First, append the keyboard binding in user.bind to ~/.lyx/bind/user.bind
-Notice the key binding name is important as LyxNotebook will use it to identify which language you are using. You could change this by edit dispatchCmd.py
+Notice the key binding name is important as LyxNotebook will use it to identify which language you are using. You could change this by editing dispatchCmd.py
 
 Then start the server you want,
 
