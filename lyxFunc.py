@@ -56,6 +56,8 @@ def copy():
 def paste():
     runLyxFunction("paste",'')
 
+def insertString(content):
+    runLyxFunction("self-insert",content)
     
 def message(msg):
     runLyxFunction("message",msg)

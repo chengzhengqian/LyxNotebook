@@ -7,6 +7,7 @@ NOTIFY_PATTERN = "NOTIFY:(.*)\n"
 NOTIFY_RE = re.compile(NOTIFY_PATTERN)
 MATH_PATTERN="In\\[\\d*\\]:=([\s\S]*)"
 MATH_RE=re.compile(MATH_PATTERN)
+
 class dispatchCmd (threading.Thread):
     '''
     string-> Thread ()
@@ -36,14 +37,18 @@ class dispatchCmd (threading.Thread):
             if(keyPressed=="Ctrl+C M"):
                 result=pclt.runMathCode(code,0)
                 serverName="math"
-                math_m=MATH_RE.search(result)
-                if(math_m):
-                    result=math_m.group(1)
+                # math_m=MATH_RE.search(result)
+                # if(math_m):
+                #     result=math_m.group(1)
+            if(keyPressed=="Ctrl+C T"):
+                serverName="transform:"
+                result=pclt.runTransform(code)
+                lfc.insertString(result)
 
             print(serverName, result)
             lfc.lineEnd()
             lfc.pasteToClipboard(result)
-            lfc.message("output:"+result)
+            lfc.message(serverName+":"+result)
         else:
             print(self.cmd)
 

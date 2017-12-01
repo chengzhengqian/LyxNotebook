@@ -2,7 +2,7 @@
 The program is now rewitten in a very general way that should apply to other command line program.
 '''
 HOST = ""
-PORT = [18175]
+PORT = [18176]
 COMMAND = ["/usr/local/bin/math"]
 
 COMMAND_NAME = ["mathematica 9"]

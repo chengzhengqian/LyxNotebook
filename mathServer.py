@@ -93,7 +93,7 @@ def extract_result_for_terminal(result):
 
 
 def print_result_for_remote(content):
-    print(content + "-" * 20 + "\n>>>")
+    print(content + "\n"+"-" * 20 + "\n>>>")
 
 
 def extract_info(returns):
@@ -108,23 +108,27 @@ def extract_info(returns):
         return "None"
 
 
+def start_kernel():
+    global process
+    print("start %s" % COMMAND[backend])
+    process = Popen(COMMAND[backend], stdin=PIPE, stdout=PIPE)
+    fcntl.fcntl(process.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
+    read_from_process(process)
+    '''write some intial command here'''
+    process.stdin.write(ENCODE("\n"))
+    process.stdin.flush()
+    read_from_process(process)
+
+
 def listen(backend=0):
     global s, process
     print("listen")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT[backend]))
     s.listen(5)
-    print("start %s" % COMMAND[backend])
-    process = Popen(COMMAND[backend], stdin=PIPE, stdout=PIPE)
-    fcntl.fcntl(process.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
 
-    read_from_process(process)
-    '''write some intial command here'''
-
-    process.stdin.write(ENCODE("\n"))
-    process.stdin.flush()
-    read_from_process(process)
-
+    start_kernel()
+    
     while True:
         conn, addr = s.accept()
         content = receive(conn)
@@ -151,10 +155,19 @@ def main_run():
 
         while True:
             content = input(">>>")
-            content = content + "\n"
-            process.stdin.write(ENCODE(content))
-            process.stdin.flush()
-            print(extract_result_for_terminal(read_from_process(process)))
+            '''processing special command'''
+            if(content == "!k"):
+                print("kill the kernel")
+                process.kill()
+                start_kernel()
+            elif(content == "!r"):
+                print("read redudande output")
+                read_from_process(process)
+            else:
+                content = content + "\n"
+                process.stdin.write(ENCODE(content))
+                process.stdin.flush()
+                print(extract_result_for_terminal(read_from_process(process)))
 
     except (KeyboardInterrupt, SystemExit):
         s.close()

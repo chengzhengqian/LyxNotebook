@@ -7,7 +7,15 @@ import os.path
 import mathServerConfigure as msc
 
 file_temp = "/home/chengzhengqian/pythonclient.py"
+transformRules ={"!t":"//TeXForm","D":"\[CapitalDelta]"}
 
+def runTransform(code):
+    '''transform a string to another according to transformRules '''
+    if code in transformRules:
+        return transformRules[code]
+    else:
+        return code
+    
 
 def runMathCode(code, backend=0):
     '''
