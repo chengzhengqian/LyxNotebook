@@ -3,9 +3,15 @@ from subprocess import Popen, PIPE
 import time
 from mathServerConfigure import *
 from socketServerUtils import *
+import _thread as thread
+import sys
 import re
+import fcntl
+import os
 
-
+s = False
+process = False
+backend = 0
 
 
 def validate_ouput(text):
@@ -46,17 +52,22 @@ def read_from_process(p, N_times=100):
     return output
 
 
-def extract_result(returns):
-    returns = backend_dependent_preprocessing(returns)
+def extract_result(result):
+    '''extract the result, it seems that regular expression sometimes breaks down'''
+    # returns = backend_dependent_preprocessing(returns)
 
-    p = re.compile(EXTRACT_RESULTS_FOR_REMOTE[backend])
-    s = p.search(returns)
-    if(s):
-        print_result_for_remote(s.group(1))
-        return s.group(1)
-    else:
-        print("result:", returns, "no match!")
-        return "None"
+    # p = re.compile(EXTRACT_RESULTS_FOR_REMOTE[backend])
+    # s = p.search(returns)
+    # if(s):
+    #     print_result_for_remote(s.group(1))
+    #     return s.group(1)
+    # else:
+    #     print("result:", returns, "no match!")
+    #     return "None"
+    for rule in RESULT_FILTERS:
+        result = re.sub(rule[0], rule[1], result)
+    print_result_for_remote(result)
+    return result
 
 
 def backend_dependent_preprocessing(returns):
@@ -66,16 +77,19 @@ def backend_dependent_preprocessing(returns):
     return returns
 
 
-def extract_result_for_terminal(returns):
-    '''some backend dependent preprocessing'''
-    returns = backend_dependent_preprocessing(returns)
-    p = re.compile(EXTRACT_RESULTS_FOR_LOCAL[backend])
-    s = p.search(returns)
-    if(s):
-        return s.group(1)
-    else:
-        print(returns)
-        return ""
+def extract_result_for_terminal(result):
+    # '''some backend dependent preprocessing'''
+    # returns = backend_dependent_preprocessing(returns)
+    # p = re.compile(EXTRACT_RESULTS_FOR_LOCAL[backend])
+    # s = p.search(returns)
+    # if(s):
+    #     return s.group(1)
+    # else:
+    #     print(returns)
+    #     return ""
+    for rule in RESULT_FILTERS:
+        result = re.sub(rule[0], rule[1], result)
+    return result
 
 
 def print_result_for_remote(content):
@@ -92,15 +106,6 @@ def extract_info(returns):
     else:
         print("Output:", returns, "is not understood!")
         return "None"
-
-
-import fcntl
-import os
-
-s = False
-process = False
-
-'''backend=0 mathematica backend=1 python'''
 
 
 def listen(backend=0):
@@ -128,17 +133,15 @@ def listen(backend=0):
         process.stdin.write(ENCODE(content))
         process.stdin.flush()
         send_content = read_from_process(process)
-        if(re.search("\?", content)):
-            send_content = extract_info(send_content)
-        else:
-            send_content = extract_result(send_content)
-        send(conn, send_content)
+        # if(re.search("\?", content)):
+        #     send_content = extract_info(send_content)
+        # else:
+        #     send_content = extract_result(send_content)
+        send(conn, extract_result(send_content))
         conn.close()
 
-import _thread as thread
-import sys
 
-if __name__ == "__main__":
+def main_run():
     try:
         backend = 0
         if(len(sys.argv) > 1):
@@ -156,3 +159,6 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, SystemExit):
         s.close()
         process.kill()
+
+if __name__ == "__main__":
+    main_run()
